@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>logic design circuit</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #172033;
+      --card-2: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --blue: #38bdf8;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #f87171;
+      --purple: #c084fc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      font-size: 17px;
+      padding-bottom: 80px;
+    }
+
+    header {
+      background: #111827;
+      border-bottom: 2px solid var(--border);
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      color: var(--yellow);
+      margin-bottom: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      background: var(--card-2);
+      color: var(--muted);
+      border: 2px solid var(--border);
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .tab.active {
+      background: var(--yellow);
+      color: #000;
+      border-color: var(--yellow);
+    }
+
+    main {
+      max-width: 1050px;
+      margin: 28px auto;
+      padding: 0 20px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .hero {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 2px solid var(--blue);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 24px;
+    }
+
+    .hero h2 { color: var(--blue); font-size: 1.6rem; margin-bottom: 6px; }
+
+    .step-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .step-title {
+      font-size: 1.35rem;
+      color: var(--green);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    /* Visual Bit Boxes */
+    .bit-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+      align-items: center;
+    }
+
+    .bit-box {
+      background: #090d16;
+      border: 2px solid var(--blue);
+      border-radius: 10px;
+      padding: 10px 16px;
+      text-align: center;
+      min-width: 68px;
+    }
+
+    .bit-box.off {
+      border-color: #475569;
+      opacity: 0.5;
+    }
+
+    .bit-weight {
+      font-size: 0.8rem;
+      color: var(--yellow);
+      font-weight: 700;
+      display: block;
+    }
+
+    .bit-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .story-box {
+      background: rgba(56, 189, 248, 0.1);
+      border-left: 5px solid var(--blue);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 14px 0;
+    }
+
+    .rule-box {
+      background: rgba(74, 222, 128, 0.12);
+      border-left: 5px solid var(--green);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 14px 0;
+    }
+
+    .warn-box {
+      background: rgba(248, 113, 113, 0.12);
+      border-left: 5px solid var(--red);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 14px 0;
+    }
+
+    pre {
+      background: #070a12;
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      margin: 12px 0;
+    }
+
+    code {
+      background: #070a12;
+      color: var(--yellow);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      background: #090d16;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px;
+      text-align: center;
+    }
+
+    th { background: var(--card-2); color: var(--yellow); }
+
+    ul, ol { margin-left: 24px; margin-bottom: 12px; }
+    li { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>👶 "Mala Anlatır Gibi" Dijital Tasarım (Sıfır Terim, %100 Mantık)</h1>
+    <div class="tabs">
+      <button class="tab active" onclick="openPage('p1', this)">1. PDF 2: Sayı Sistemleri</button>
+      <button class="tab" onclick="openPage('p2', this)">2. PDF 1: BCD, Gray & Parity</button>
+      <button class="tab" onclick="openPage('p3', this)">3. PDF 3: Boolean & Sadeleştirme</button>
+      <button class="tab" onclick="openPage('p4', this)">4. PDF 4: Minterm, Maxterm & Kapılar</button>
+      <button class="tab" onclick="openPage('p5', this)">5. PDF 5: Karnaugh Haritası (K-Map) 🔥</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- =================================================
+       SAYFA 1: PDF 2 - SAYI SİSTEMLERİ (ULTRA BASİT)
+       ================================================= -->
+  <section id="p1" class="page active">
+    <div class="hero">
+      <h2>1. Bölüm (PDF 2): Sayı Sistemleri — Bakkal Hesabı Gibi Anlatım</h2>
+      <p>Kanka formülleri unut! Sadece elimizdeki kutulara jeton atacağız.</p>
+    </div>
+
+    <!-- KONU 1 -->
+    <div class="step-card">
+      <div class="step-title">📦 1. Bu 4 Sayı Sistemi Ne İşe Yarıyor?</div>
+      <div class="story-box">
+        <strong>Hikayesi şu:</strong>
+        <ul>
+          <li><strong>10'luk Sistem (Decimal):</strong> Bizim günlük hayatta kullandığımız sayılar. İçinde <code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</code> var.</li>
+          <li><strong>2'lik Sistem (Binary):</strong> Bilgisayarın içinde sadece lamba var. Lamba ya <strong>YANIK (1)</strong> ya <strong>SÖNÜK (0)</strong>. Başka rakam yok!</li>
+          <li><strong>8'lik Sistem (Octal):</strong> İçinde sadece <code>0, 1, 2, 3, 4, 5, 6, 7</code> var. (<strong>8 ve 9 YASAK!</strong>)</li>
+          <li><strong>16'lık Sistem (Hex):</strong> 0'dan 15'e kadar sayıları tek harfle yazmak için uydurulmuş. 9'dan sonra 10 yazamıyoruz (çünkü 10 iki haneli), onun yerine harf koyuyoruz:
+            <br>👉 <strong>A = 10, B = 11, C = 12, D = 13, E = 14, F = 15</strong>. (Bunu adın gibi ezberle!)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- KONU 2 -->
+    <div class="step-card">
+      <div class="step-title">💡 2. Binary (0 ve 1) Sayıyı Normal Sayıya Çevirmek ("Lamba Oyunu")</div>
+      <p>Kanka elimizde <code>110101</code> diye bir Binary sayı var diyelim. Bu normalde kaç demek?</p>
+      <p><strong>Kural:</strong> En sağdan sola doğru lambaların üstüne <strong>1'den başlayıp hep 2 katını</strong> yazıyorsun: <code>1, 2, 4, 8, 16, 32, 64, 128...</code></p>
+      <p>Sonra sadece <strong>YANIK OLAN LAMBALARIN (yani 1 olanların)</strong> üstündeki sayıları topluyorsun! Sönük (0) olanları çöpe at!</p>
+
+      <div class="bit-row">
+        <div class="bit-box"><span class="bit-weight">32 TL</span><span class="bit-val">1</span></div>
+        <div class="bit-box"><span class="bit-weight">16 TL</span><span class="bit-val">1</span></div>
+        <div class="bit-box off"><span class="bit-weight">8 TL (Çöp)</span><span class="bit-val">0</span></div>
+        <div class="bit-box"><span class="bit-weight">4 TL</span><span class="bit-val">1</span></div>
+        <div class="bit-box off"><span class="bit-weight">2 TL (Çöp)</span><span class="bit-val">0</span></div>
+        <div class="bit-box"><span class="bit-weight">1 TL</span><span class="bit-val">1</span></div>
+      </div>
+
+      <div class="rule-box">
+        <strong>Topla 1 olanları:</strong> <code>32 + 16 + 4 + 1 = 53</code>! İşte bu kadar basit!
+        <br><br>
+        <strong>Peki virgüllü olursa? (Örn: <code>.101</code>):</strong>
+        <br>Virgülün solunda sayılar 2 katına çıkıyordu ya (1, 2, 4, 8), virgülün sağında da <strong>YARISINA İNER!</strong>
+        <ul>
+          <li>Virgülden sonraki 1. basamak = 1'in yarısı = <strong><code>0.5</code></strong></li>
+          <li>Virgülden sonraki 2. basamak = 0.5'in yarısı = <strong><code>0.25</code></strong></li>
+          <li>Virgülden sonraki 3. basamak = 0.25'in yarısı = <strong><code>0.125</code></strong></li>
+        </ul>
+        Yani <code>.101</code> demek: <code>0.5 + 0 + 0.125 = 0.625</code> demektir!
+      </div>
+    </div>
+
+    <!-- KONU 3 -->
+    <div class="step-card">
+      <div class="step-title">🍕 3. Normal Sayıyı Binary'e Çevirmek ("İkiye Bölme Oyunu")</div>
+      <p>Diyelim ki sana normal <code>45</code> sayısını verdiler, "Bunu 0 ve 1 olarak (Binary) yaz" dediler.</p>
+      <div class="rule-box">
+        <strong>Hiç bölme işlemine bile gerek kalmayan Market Taktiği:</strong>
+        <p>Elinde <strong>45 TL</strong> para var. Marketten sırasıyla <code>32 TL, 16 TL, 8 TL, 4 TL, 2 TL, 1 TL</code>'lik ürünlerden hangilerini alırsan tam 45 TL tutar?</p>
+        <ul>
+          <li><strong>32 TL</strong>'lik ürünü aldın mı? <strong>EVET (1)</strong> ➔ Cebinde kaldı <code>45 - 32 = 13 TL</code>.</li>
+          <li><strong>16 TL</strong>'lik ürünü alabilir misin? 13 TL paran var, yetmez! <strong>HAYIR (0)</strong>.</li>
+          <li><strong>8 TL</strong>'lik ürünü aldın mı? <strong>EVET (1)</strong> ➔ Cebinde kaldı <code>13 - 8 = 5 TL</code>.</li>
+          <li><strong>4 TL</strong>'lik ürünü aldın mı? <strong>EVET (1)</strong> ➔ Cebinde kaldı <code>5 - 4 = 1 TL</code>.</li>
+          <li><strong>2 TL</strong>'lik ürünü alabilir misin? 1 TL paran var, yetmez! <strong>HAYIR (0)</strong>.</li>
+          <li><strong>1 TL</strong>'lik ürünü aldın mı? <strong>EVET (1)</strong> ➔ Cebinde kaldı <code>0 TL</code>!</li>
+        </ul>
+        Yan yana yaz: <strong><code>101101</code></strong>! Bölme yapmadan 5 saniyede buldun!
+      </div>
+      <p><em>(Virgüllü bir sayıyı, mesela <code>0.625</code>'i Binary'e çevir derlerse: Sayıyı 2 ile çarpıyorsun: <code>0.625 × 2 = 1.25</code> ➔ Baştaki <strong>1</strong>'i al. Kalan <code>0.25 × 2 = 0.50</code> ➔ Baştaki <strong>0</strong>'ı al. Kalan <code>0.50 × 2 = 1.00</code> ➔ Baştaki <strong>1</strong>'i al. Yan yana yaz: <code>.101</code>!)</em></p>
+    </div>
+
+    <!-- KONU 4 -->
+    <div class="step-card">
+      <div class="step-title">⚡ 4. Binary ↔ Octal (8) ↔ Hex (16) Çevirme ("3'lü ve 4'lü Kutu Taktiği")</div>
+      <p>Kanka burası sınavın en bedava puanı! Sadece iki şablon ezberleyeceksin:</p>
+      <ul>
+        <li><strong>Octal (8'lik) kelimesini duyunca:</strong> Aklına <strong>3'lü grup</strong> ve <strong><code>4 - 2 - 1</code></strong> gelsin!</li>
+        <li><strong>Hex (16'lık) kelimesini duyunca:</strong> Aklına <strong>4'lü grup</strong> ve <strong><code>8 - 4 - 2 - 1</code></strong> gelsin!</li>
+      </ul>
+
+      <pre>SORU 1: 2AF (Hex) sayısını Binary yap!
+Cevap: Her harfi 4'lü kutuya (8-4-2-1) çevir:
+• 2 sayısı : 8-4-2-1 içinden sadece 2 lazım       ➔ 0010
+• A (10)   : 8-4-2-1 içinden 8 ve 2 lazım (8+2=10)➔ 1010
+• F (15)   : 8-4-2-1 içinden hepsi lazım (8+4+2+1)➔ 1111
+Yan yana yapıştır: 0010 1010 1111 (Bitti!)
+
+SORU 2: 11010110 (Binary) sayısını Octal (8'lik) yap!
+Cevap: En sağdan başlayarak 3'er 3'er kes:
+• En sağdaki 3'lü : 110 ➔ Üstüne 4-2-1 yaz ➔ 4 + 2 = 6
+• Ortadaki 3'lü   : 010 ➔ Üstüne 4-2-1 yaz ➔ Sadece 2 = 2
+• En solda kalan  : 11 (2 tane kaldı, soluna 0 koy: 011) ➔ 2 + 1 = 3
+Yan yana yaz: 326 (Octal)!</pre>
+    </div>
+
+    <!-- KONU 5 -->
+    <div class="step-card">
+      <div class="step-title">➖ 5. Negatif Sayılar: Two's Complement ("İlk 1'i Bul, Gerisini Ters Çevir!")</div>
+      <p>Sınavda kesin soracaklar: <strong>"-28 sayısını 8-bit Two's Complement ile yazın."</strong></p>
+      <div class="rule-box">
+        <strong>Bebek Adımlarıyla Çözüm:</strong>
+        <ol>
+          <li><strong>Adım 1:</strong> Eksiyi boşver, normal <code>28</code> sayısını 8 haneli Binary olarak yaz (Market taktiğiyle: <code>16 + 8 + 4 = 28</code>):
+            <br><code>0001 1100</code></li>
+          <li><strong>Adım 2 (Sihirli Kısayol):</strong> En sağdan sola doğru yürü. <strong>İLK <code>1</code>'İ GÖRENE KADAR (İLK 1 DAHİL) HİÇ DOKUNMA, AYNEN YAZ!</strong> İlk 1'i geçtikten sonra solunda kalan bütün rakamları ters çevir (0 ise 1, 1 ise 0 yap)!</li>
+        </ol>
+        <pre>Normal +28 :  0 0 0 1 1 [1 0 0]  <-- Sağdan ilk 1 köşeli parantezin başındaki 1!
+                         | | |
+ sağdaki [100] aynen kalır, solundaki 00011 ters çevrilir (11100 olur):
+Negatif -28:  1 1 1 0 0 [1 0 0]  --> 1110 0100 (BİTTİ!)</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================
+       SAYFA 2: PDF 1 - BCD, GRAY CODE, ASCII & PARITY
+       ================================================= -->
+  <section id="p2" class="page">
+    <div class="hero">
+      <h2>2. Bölüm (PDF 1 - Lecture 03): BCD Kodu, Gray Kodu, ASCII ve Parity</h2>
+      <p>Bu PDF'te sadece 4 tane çok kolay kural var. Gel sırayla hepsini cebimize koyalım!</p>
+    </div>
+
+    <!-- BCD NEDİR -->
+    <div class="step-card">
+      <div class="step-title">🔢 1. BCD Kodu Nedir? ("Tembel İnsanın Binary'si")</div>
+      <p>Kanka az önce normal Binary yaparken <code>45</code> sayısını 32+8+4+1 diye hesaplamıştık ya... <strong>BCD diyor ki: "Uğraşma öyle toplamayla bölmeyle! Her rakamı tek tek ayrı ayrı 4 haneli (8-4-2-1) yaz geç!"</strong></p>
+      <div class="rule-box">
+        <strong>Örnek: <code>871</code> sayısının BCD kodu nedir?</strong>
+        <ul>
+          <li><code>8</code> rakamını 4 haneli yaz: <strong><code>1000</code></strong></li>
+          <li><code>7</code> rakamını 4 haneli yaz (4+2+1): <strong><code>0111</code></strong></li>
+          <li><code>1</code> rakamını 4 haneli yaz: <strong><code>0001</code></strong></li>
+        </ul>
+        Yan yana koy: <strong><code>1000 0111 0001</code></strong>! İşte buna <strong>BCD</strong> denir!
+      </div>
+      <div class="warn-box">
+        <strong>🚫 BCD'de Yasaklı Sayılar:</strong> Tek bir rakam en fazla <code>9</code> (`1001`) olabilir. O yüzden 4 bit ile yazılabilen <strong>10 (`1010`), 11 (`1011`), 12 (`1100`), 13 (`1101`), 14 (`1110`) ve 15 (`1111`)</strong> BCD'de <strong>YASAKTIR (Invalid)!</strong>
+      </div>
+    </div>
+
+    <!-- BCD TOPLAMA -->
+    <div class="step-card">
+      <div class="step-title">➕ 2. BCD Toplama: "9'u Geçerse +6 (0110) Cezası Kes!"</div>
+      <p>İki sayıyı BCD ile toplarken tek bir kural var:</p>
+      <div class="rule-box">
+        <ul>
+          <li>Topladığın rakamlar <strong>9 veya daha küçükse (0..9 arası):</strong> Süper! Sonuç doğrudur, dokunma!</li>
+          <li>Topladığın rakamlar <strong>9'u geçerse (10 ve üstü çıkarsa):</strong> BCD'de 10 ve üstü yasaktı! Cezası var: Sonuca hemen <strong><code>+6</code> (yani <code>0110</code>) EKLERSİN!</strong></li>
+        </ul>
+        <pre>Örnek: 6 + 7 = 13 işlemini BCD ile yapalım:
+  0110  (6)
++ 0111  (7)
+------
+  1101  (Bu sayı 13! 9'u geçtiği için YASAK!)
++ 0110  (Hemen +6 yani 0110 ekliyoruz!)
+------
+1 0011  --> Baştaki 1'in soluna sıfırlar koy: 0001 0011 (1 ve 3 = 13!)</pre>
+      </div>
+    </div>
+
+    <!-- BCD ÇIKARMA -->
+    <div class="step-card">
+      <div class="step-title">➖ 3. BCD Çıkarma: "9'dan Çıkar, 1 Ekle, Topla!" (10's Complement)</div>
+      <p>Sınavda <strong>"<code>75 - 38</code> işlemini BCD 10's Complement ile yapın"</strong> derse şu 3 adımı yapıyorsun:</p>
+      <div class="rule-box">
+        <ol>
+          <li><strong>Adım 1:</strong> İkinci sayının (<code>38</code>'in) her rakamını <code>9</code>'dan çıkar, sonra <code>1</code> ekle:
+            <br><code>99 - 38 = 61</code> (Buna 9's complement denir).
+            <br><code>61 + 1 = 62</code> (Buna 10's complement denir).</li>
+          <li><strong>Adım 2:</strong> Şimdi birinci sayıyla (<code>75</code>) bu bulduğun <code>62</code>'yi topla:
+            <br><code>75 + 62 = 137</code>.</li>
+          <li><strong>Adım 3:</strong> Sonuç 3 haneli çıktı (<code>137</code>). En baştaki fazladan <strong><code>1</code>'i (eldeyi) ÇÖPE AT!</strong> Geriye ne kaldı? <strong><code>+37</code>!</strong></li>
+        </ol>
+        <p><em>(Peki ya <code>18 - 30</code> gibi küçük sayıdan büyük sayıyı çıkarsaydık? O zaman 30'u 99'dan çıkarıp 1 eklerdik: <code>70</code>. Sonra <code>18 + 70 = 88</code> çıkardı. Bak 3. hane (elde) ÇIKMADI! Elde çıkmazsa sonuç <strong>EKSİDİR (-)</strong> ve bulduğun <code>88</code>'i tekrar 99'dan çıkarıp 1 eklersin: <code>(99 - 88) + 1 = 12</code> ➔ Başına eksi koy: <strong><code>-12</code></strong>!)</em></p>
+      </div>
+    </div>
+
+    <!-- GRAY CODE & PARITY -->
+    <div class="step-card">
+      <div class="step-title">🛡️ 4. Gray Code ve Parity Bit (Hata Yakalayıcı)</div>
+      <div class="story-box">
+        <h4>Gray Code Nedir?</h4>
+        <p>Normalde 3'ten (<code>011</code>) 4'e (<code>100</code>) geçerken 3 bitin 3'ü de aynı anda değişir. Makine bunu okurken şaşırabilir. <strong>Gray Code</strong> öyle bir koddur ki, bir sayıdan bir sonrakine geçerken <strong>HER ZAMAN SADECE 1 BİT DEĞİŞİR!</strong></p>
+      </div>
+
+      <div class="rule-box">
+        <h4>Parity Bit (Bekçi Biti) Nedir? (Slayt 26)</h4>
+        <p>Kablodan 7 tane bit gönderirken yolda biri bozulmasın diye en başa 1 tane <strong>Bekçi Biti (P)</strong> koyarız. İki çeşidi vardır:</p>
+        <ul>
+          <li><strong>Even Parity (Çift Bekçisi):</strong> "Arkadaşlar, içerdeki toplam <code>1</code>'lerin adedi <strong>ÇİFT SAYI (2, 4, 6)</strong> olmak zorunda!" der.
+            <br>Örnek: Mesajımız <code>1000011</code> (İçinde kaç tane 1 var? <strong>3 tane</strong>, yani tek!). Çift olması için bekçi kendini <strong><code>1</code></strong> yapar ➔ <code>[1] 1000011</code> (Artık 4 tane 1 oldu, yani ÇİFT!).</li>
+          <li><strong>Odd Parity (Tek Bekçisi):</strong> "İçerdeki toplam <code>1</code>'lerin adedi <strong>TEK SAYI (1, 3, 5)</strong> olmak zorunda!" der.
+            <br>Örnek: Mesajımız <code>1000011</code> (İçinde zaten <strong>3 tane</strong> 1 var, yani zaten TEK!). O zaman bekçi kendini <strong><code>0</code></strong> yapar ➔ <code>[0] 1000011</code>.</li>
+        </ul>
+        <p>⚠️ <strong>Tek Kusuru:</strong> Yolda aynı anda <strong>2 bit birden</strong> bozulursa bekçi bunu anlayamaz!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================
+       SAYFA 3: PDF 3 - BOOLEAN ALGEBRA (ULTRA BASİT)
+       ================================================= -->
+  <section id="p3" class="page">
+    <div class="hero">
+      <h2>3. Bölüm (PDF 3): Boolean Cebiri — Harflerle Oyun Oynamak</h2>
+      <p>Kanka burada sadece 3 tane işlem ve 5 tane kısayol kuralı var. Başka hiçbir şey yok!</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-title">🔌 1. Üç Temel Kapı: AND, OR, NOT</div>
+      <ul>
+        <li><strong>AND (Nokta <code>•</code> veya yan yana yazma <code>xy</code>):</strong> Katı patron! Sonucun <code>1</code> olması için <strong>HER İKİSİNİN DE 1 OLMASI ŞARTTIR!</strong> Biri bile 0 ise sonuç 0'dır. (<code>1 • 1 = 1</code>, diğerleri hep <code>0</code>).</li>
+        <li><strong>OR (Artı <code>+</code> işareti <code>x + y</code>):</strong> İyi kalpli patron! İçlerinden <strong>BİR TANESİ BİLE 1 OLSA</strong> sonuç hemen <code>1</code> olur! (Yani burada <strong><code>1 + 1 = 1</code></strong>'dir! Sakın 2 deme!).</li>
+        <li><strong>NOT (Üstten çizgi <code>x'</code>):</strong> Zıtlık! <code>1</code> girerse <code>0</code> çıkar, <code>0</code> girerse <code>1</code> çıkar.</li>
+      </ul>
+    </div>
+
+    <div class="step-card">
+      <div class="step-title">✂️ 2. Denklem Sadeleştirme: Sadece Şu 6 Kuralı Bil Yeter!</div>
+      <p>Sınavda sana uzun bir harfli denklem verip "Bunu kısalt (sadeleştir)" diyecekler. Kullanacağın 6 sihirli silgi:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Gördüğün Şey</th>
+            <th>Ne Yapacaksın?</th>
+            <th>Neden? (Mantığı)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>x + 1</code></td>
+            <td>Direkt <strong><code>1</code></strong> yaz!</td>
+            <td>OR (+) işleminde <code>1</code> canavardır, yanındaki her şeyi yutar, sonucu 1 yapar!</td>
+          </tr>
+          <tr>
+            <td><code>x + x'</code></td>
+            <td>Direkt <strong><code>1</code></strong> yaz!</td>
+            <td>Bir sayı ile tersini toplarsan kesinlikle biri 1'dir, sonuç <strong>1</strong> olur!</td>
+          </tr>
+          <tr>
+            <td><code>x • x'</code></td>
+            <td>Direkt <strong><code>0</code></strong> yaz!</td>
+            <td>Bir sayı ile tersini çarparsan kesinlikle biri 0'dır, sonuç <strong>0</strong> olur!</td>
+          </tr>
+          <tr>
+            <td><strong><code>x + xy</code></strong></td>
+            <td>Direkt <strong><code>x</code></strong> yaz! (<code>xy</code> çöp!)</td>
+            <td>Küçük kardeş (<code>x</code>), kendisini içeren büyük kardeşi (<code>xy</code>) yutar!</td>
+          </tr>
+          <tr>
+            <td><strong><code>x + x'y</code></strong></td>
+            <td>Direkt <strong><code>x + y</code></strong> yaz!</td>
+            <td>Tek başına duran <code>x</code>, yanındaki terimde duran kendi tersini (<code>x'</code>) tokatlayıp siler!</td>
+          </tr>
+          <tr>
+            <td><strong><code>xy + x'z + yz</code></strong></td>
+            <td><strong><code>xy + x'z</code></strong> yaz! (<code>yz</code> çöp!)</td>
+            <td><strong>Consensus Kuralı:</strong> Bir terimde <code>x</code>, diğerinde <code>x'</code> varsa, yanlarındaki <code>y</code> ve <code>z</code>'nin birleşimi olan <code>yz</code> fazlalıktır, sil at!</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="rule-box">
+        <strong>Sınav Örneği (Slayt 24): <code>F = x'y'z + x'yz + xy'</code> denklemini kısalt!</strong>
+        <pre>1) İlk iki terime bak: İkisinde de [x'z] ortak! Paranteze al:
+   F = x'z (y' + y) + xy'
+
+2) Parantez içindeki (y' + y) neydi? Tabii ki 1!
+   F = x'z (1) + xy'
+
+3) Cevap: F = x'z + xy'  (Bak 8 harften 4 harfe düştü, tam puan!)</pre>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-title">🔄 3. DeMorgan ve "Tersini (F') Bulma" Oyunu (Slayt 27)</div>
+      <p>Sınavda bir denklem verip <strong>"Bunun tümleyenini (Complement / <code>F'</code>) bulun"</strong> derlerse:</p>
+      <div class="rule-box">
+        <strong>2 Saniyelik Kural:</strong>
+        <ol>
+          <li>Aradaki tüm <strong>ÇARPMA (•) ile TOPLAMA (+) yerini değiştir!</strong></li>
+          <li>Bütün harflerin <strong>TERSİNİ AL</strong> (Üstünde çizgi varsa sil, yoksa çizgi koy)!</li>
+        </ol>
+        <pre>Örnek: F = x'yz' + x'y'z  ise  F' nedir?
+1) Çarpma olanları toplama, toplamayı çarpma yap:
+   (x' + y + z') • (x' + y' + z)
+2) Şimdi her harfin çizgisini tersine çevir:
+   F' = (x + y' + z) • (x + y + z')   --> BİTTİ!</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================
+       SAYFA 4: PDF 4 - MINTERM, MAXTERM & KAPILAR
+       ================================================= -->
+  <section id="p4" class="page">
+    <div class="hero">
+      <h2>4. Bölüm (PDF 4): Minterm (Σ), Maxterm (Π) ve 8 Kapı</h2>
+      <p>İsmi korkutucu ama kuralları bulmaca çözmek kadar eğlenceli ve basit!</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-title">🎯 1. Minterm (m) ve Maxterm (M) Farkı Nedir?</div>
+      <p>Elimizde <code>x, y, z</code> diye 3 harf ve mesela <code>0 1 1</code> (yani 3 numara) diye bir satır var:</p>
+      <div class="rule-box">
+        <ul>
+          <li><strong>Minterm (Küçük <code>m</code> - Doğrucu Davut):</strong>
+            <br><code>1</code> gördüğü harfi <strong>DÜZ</strong> yazar, <code>0</code> gördüğü harfe <strong>ÇİZGİ (')</strong> koyar ve hepsini <strong>ÇARPAR</strong>!
+            <br>👉 <code>0 1 1</code> için Minterm: <strong><code>x' y z</code></strong> (<code>x</code> sıfır olduğu için çizgi aldı, <code>y</code> ve <code>z</code> bir olduğu için düz kaldı).</li>
+          <li><strong>Maxterm (Büyük <code>M</code> - Yalancı / Tersçi):</strong>
+            <br>Her şeyi Minterm'in <strong>TAM TERSİ</strong> yapar! <code>0</code> gördüğünü <strong>DÜZ</strong> yazar, <code>1</code> gördüğüne <strong>ÇİZGİ (')</strong> koyar ve aralarına <strong>ARTI (+)</strong> koyar!
+            <br>👉 <code>0 1 1</code> için Maxterm: <strong><code>x + y' + z'</code></strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-title">🔄 2. Σ (Sigma) ve Π (Pi) Arasında 1 Saniyede Geçiş!</div>
+      <p>Sınavda %100 çıkacak soru tipi:</p>
+      <div class="rule-box">
+        <strong>Soru: <code>F(x,y,z) = Σ(1, 2, 3, 5, 7)</code> ise bunun Product of Maxterms (<code>Π</code>) karşılığı nedir?</strong>
+        <p><strong>Çözüm:</strong> 0'dan 7'ye kadar olan rakamlardan (`0, 1, 2, 3, 4, 5, 6, 7`) soruda <strong>YAZILMAYAN (EKSİK OLAN)</strong> rakamları seçip başına <code>Π</code> koyuyorsun!</p>
+        <ul>
+          <li>Soruda olanlar: <code>1, 2, 3, 5, 7</code></li>
+          <li>Eksik olanlar kim? <strong><code>0, 4, 6</code></strong>!</li>
+          <li>Cevap: <strong><code>F(x,y,z) = Π(0, 4, 6)</code></strong>! (Bu kadar!)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-title">🚪 3. Özel Kapılar: NAND, NOR, XOR, XNOR (Slayt 25 - 26)</div>
+      <p>AND, OR, NOT'u zaten biliyorsun. Geriye sadece şu 4 kapı kaldı:</p>
+      <ul>
+        <li><strong>NAND Kapısı:</strong> Bildiğin AND kapısının çıkışına "ters çevirici" takılmış halidir. (İkisi de 1 iken <code>0</code> verir, diğer her durumda <code>1</code> verir).</li>
+        <li><strong>NOR Kapısı:</strong> Bildiğin OR kapısının çıkışına "ters çevirici" takılmış halidir. (İkisi de 0 iken <code>1</code> verir, diğer her durumda <code>0</code> verir).</li>
+        <li><strong>XOR Kapısı (⊕ - "Farklıysa 1"):</strong> Girişler birbirinden <strong>FARKLIYSA</strong> (biri 0, biri 1 ise) <strong><code>1</code></strong> verir. İkisi aynıysa (`0-0` veya `1-1`) <code>0</code> verir!</li>
+        <li><strong>XNOR Kapısı ("Aynıysa 1"):</strong> Girişler birbirinin <strong>AYNISIYSA</strong> (`0-0` veya `1-1` ise) <strong><code>1</code></strong> verir!</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =================================================
+       SAYFA 5: PDF 5 (LECTURE 07) - KARNAUGH HARİTASI (K-MAP)
+       ================================================= -->
+  <section id="p5" class="page">
+    <div class="hero">
+      <h2>5. Bölüm (PDF 5 - Lecture 07): Karnaugh Haritası (K-Map) ile Sadeleştirme</h2>
+      <p>Vizenin EN BANKO sorusu! Formül ezberlemek yok, kutucukları yuvarlak içine alıp harf siliyoruz!</p>
+    </div>
+
+    <!-- 1. CEBİRSEL ÇOĞALTMA TAKTİĞİ (SLAYT 6-14) -->
+    <div class="step-card">
+      <div class="step-title">🪄 1. Tablodan Devre Çizme ve "Aynı Terimi Klonlama" Hilesi (Slayt 4 - 14)</div>
+      <p>Kanka hoca K-Map'e geçmeden önce ilk 14 slaytta şunu anlatıyor: "Elimizde bir doğruluk tablosu varsa, sonucu <code>F = 1</code> olan satırları alırız ve ortak paranteze alarak sadeleştiririz."</p>
+      <div class="rule-box">
+        <strong>🔥 Problem 1 (Slayt 4 - 9): <code>F = A'BC + AB'C + ABC' + ABC</code> nasıl sadeleşir?</strong>
+        <p><strong>Hile şu:</strong> Boolean cebirinde bir terimi istediğin kadar kopyalayabilirsin (çünkü <code>X = X + X + X</code>). En sondaki <strong><code>ABC</code></strong> terimini 3 kere klonlayıp diğer üç terimin yanına dağıtıyoruz ki hepsiyle ortak paranteze girsin!</p>
+        <pre>F = (A'BC + ABC) + (AB'C + ABC) + (ABC' + ABC)
+  = BC(A' + A)   + AC(B' + B)   + AB(C' + C)
+  = BC(1)        + AC(1)        + AB(1)
+  = BC + AC + AB  (Kocaman devre 3 küçük kapıya düştü!)</pre>
+      </div>
+      <div class="story-box">
+        <strong>🔥 Problem 2 (Slayt 10 - 12): <code>F = ABC + ABC' + A'B'C + A'B'C'</code></strong>
+        <pre>F = AB(C + C') + A'B'(C + C')
+  = AB(1) + A'B'(1)
+  = AB + A'B'   ===> Bu neydi? İkisi aynıysa 1 veren XNOR ( (A ⊕ B)' ) kapısı!</pre>
+      </div>
+    </div>
+
+    <!-- 2. KARNAUGH HARİTASI NEDİR VE DİZİLİŞ KURALI -->
+    <div class="step-card">
+      <div class="step-title">🗺️ 2. Karnaugh Haritası (K-Map) Nedir? ("00 - 01 - 11 - 10" Sırrı!)</div>
+      <p>Formüllerle uğraşmak zor olduğu için <strong>Karnaugh Haritası</strong> icat edilmiş. Doğruluk tablosundaki satırları bir dama tahtası gibi kutucuklara yerleştiriyoruz.</p>
+      <div class="warn-box">
+        <strong>🚨 HAYATİ KURAL (Bunu yanlış yazarsan tüm soru gider!):</strong>
+        <p>K-Map tablosunun üstündeki ve yanındaki sayıları yazarken normal sırayla (00, 01, 10, 11) YAZMIYORUZ! <strong>Gray Code sırasıyla</strong> yazıyoruz:</p>
+        <p style="font-size: 1.3rem; text-align: center; margin: 10px 0;">👉 <strong><code>00</code> ➔ <code>01</code> ➔ <code>11</code> ➔ <code>10</code></strong> 👈</p>
+        <p><strong>Bu yüzden kutu numaraları şöyle atlar:</strong> <code>m₀, m₁, m₃, m₂</code> (Önce 3, en sonda 2 gelir! Çünkü <code>11</code> = 3, <code>10</code> = 2 demektir!).</p>
+      </div>
+
+      <h4>3 Değişkenli K-Map Şablonu (8 Kutu - Slayt 19):</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>x \ yz</th>
+            <th><code>00</code> (y'z')</th>
+            <th><code>01</code> (y'z)</th>
+            <th><strong><code>11</code> (yz) ⚠️ Dikkat!</strong></th>
+            <th><strong><code>10</code> (yz') ⚠️ Dikkat!</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong><code>0</code> (x')</strong></td>
+            <td><code>m₀</code> (0)</td>
+            <td><code>m₁</code> (1)</td>
+            <td><strong><code>m₃</code> (3)</strong></td>
+            <td><strong><code>m₂</code> (2)</strong></td>
+          </tr>
+          <tr>
+            <td><strong><code>1</code> (x)</strong></td>
+            <td><code>m₄</code> (4)</td>
+            <td><code>m₅</code> (5)</td>
+            <td><strong><code>m₇</code> (7)</strong></td>
+            <td><strong><code>m₆</code> (6)</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>4 Değişkenli K-Map Şablonu (16 Kutu - Slayt 25):</h4>
+      <p>Hem sütunlarda hem satırlarda 3. ve 4. sıra yer değiştirir! (Yani <code>m₈..m₁₁</code> en alt satıra, <code>m₁₂..m₁₅</code> bir üst satıra yazılır!):</p>
+      <table>
+        <thead>
+          <tr>
+            <th>wx \ yz</th>
+            <th><code>00</code> (y'z')</th>
+            <th><code>01</code> (y'z)</th>
+            <th><code>11</code> (yz) ⚠️</th>
+            <th><code>10</code> (yz') ⚠️</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong><code>00</code> (w'x')</strong></td>
+            <td><code>m₀</code></td>
+            <td><code>m₁</code></td>
+            <td><code>m₃</code></td>
+            <td><code>m₂</code></td>
+          </tr>
+          <tr>
+            <td><strong><code>01</code> (w'x)</strong></td>
+            <td><code>m₄</code></td>
+            <td><code>m₅</code></td>
+            <td><code>m₇</code></td>
+            <td><code>m₆</code></td>
+          </tr>
+          <tr>
+            <td><strong><code>11</code> (wx) ⚠️</strong></td>
+            <td><strong><code>m₁₂</code></strong></td>
+            <td><strong><code>m₁₃</code></strong></td>
+            <td><strong><code>m₁₅</code></strong></td>
+            <td><strong><code>m₁₄</code></strong></td>
+          </tr>
+          <tr>
+            <td><strong><code>10</code> (wx') ⚠️</strong></td>
+            <td><strong><code>m₈</code></strong></td>
+            <td><strong><code>m₉</code></strong></td>
+            <td><strong><code>m₁₁</code></strong></td>
+            <td><strong><code>m₁₀</code></strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 3. GRUPLAMA KURALLARI -->
+    <div class="step-card">
+      <div class="step-title">🎯 3. K-Map Gruplama Kuralları ("Mala Anlatır Gibi" 5 Altın Kural)</div>
+      <div class="rule-box">
+        <ol>
+          <li><strong>Sadece 2'nin Katları Kadar Kutu Gruplanır:</strong> Yan yana veya alt alta olan <strong><code>1</code>, <code>2</code>, <code>4</code>, <code>8</code> veya <code>16</code></strong> tane <code>1</code>'i tek bir dikdörtgen/kare içine alabilirsin!
+            <br>🚫 <strong>3'lü, 5'li, 6'lı veya ÇAPRAZ grup KESİNLİKLE YASAKTIR!</strong></li>
+          <li><strong>Ne Kadar Büyük Grup, O Kadar Az Harf! (Slayt 22 & 26):</strong>
+            <ul>
+              <li><strong>1'li kutu:</strong> Hiç harf silmez.</li>
+              <li><strong>2'li grup (Pair):</strong> <strong>1 harfi</strong> çöpe atar!</li>
+              <li><strong>4'lü grup (Quad):</strong> <strong>2 harfi</strong> çöpe atar!</li>
+              <li><strong>8'li grup (Octet):</strong> <strong>3 harfi</strong> çöpe atar!</li>
+            </ul>
+          </li>
+          <li><strong>Harita Yuvarlak Dünya Gibidir (Wrap-Around / Pac-Man Kuralı - Slayt 21, 22, 28):</strong>
+            <ul>
+              <li>En <strong>SOL</strong> kenar ile en <strong>SAĞ</strong> kenar birbirine komşudur!</li>
+              <li>En <strong>ÜST</strong> satır ile en <strong>ALT</strong> satır birbirine komşudur!</li>
+              <li><strong>4 Köşe Kuralı (Four Corners):</strong> Haritanın en dışındaki <strong>4 köşede</strong> (<code>m₀, m₂, m₈, m₁₀</code> veya 3 değişkenlide <code>m₀, m₂, m₄, m₆</code>) <code>1</code> varsa, bu 4 köşe birleşip <strong>4'lü tek bir grup</strong> olur!</li>
+            </ul>
+          </li>
+          <li><strong>Aynı <code>1</code>'i Tekrar Kullanabilirsin (Cell Reuse - Slayt 22):</strong> Boşta kalan yalnız bir <code>1</code> varsa, grubunu büyütmek için daha önce başka grupta kullandığın komşu bir <code>1</code>'i tekrar içine alabilirsin!</li>
+          <li><strong>Grubun Harfini Nasıl Okursun? ("Değişeni Sil, Sabit Kalanı Yaz!"):</strong>
+            <br>Grubun kapsadığı satır ve sütunlara bak: Hangi harf hem <code>0</code> hem <code>1</code> olmuşsa (değişmişse) <strong>ONU SİL!</strong> Hep <code>1</code> olarak kalan harfi <strong>düz (<code>x</code>)</strong>, hep <code>0</code> olarak kalan harfi <strong>çizgili (<code>x'</code>)</strong> olarak yaz!</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- 4. ADIM ADIM SLAYT ÖRNEKLERİ -->
+    <div class="step-card">
+      <div class="step-title">📝 4. Slayttaki K-Map Sorularının Bebek Adımlarıyla Çözümü</div>
+
+      <div class="story-box">
+        <h4>Örnek 1 (Slayt 21): <code>F(x,y,z) = Σ(3, 4, 6, 7)</code></h4>
+        <p>Kutulara 1 koyuyoruz: <code>m₃, m₄, m₆, m₇</code>.</p>
+        <ul>
+          <li><strong>1. Grup (<code>m₃</code> ve <code>m₇</code>):</strong> İkisi de <code>11 (yz)</code> sütununda alt alta! Satırda <code>x</code> hem 0 hem 1 olmuş (<code>x</code> silindi!). Sütunda <code>yz = 11</code> sabit kalmış ➔ Buradan <strong><code>yz</code></strong> gelir!</li>
+          <li><strong>2. Grup (<code>m₄</code> ve <code>m₆</code> - Kenardan Sarma!):</strong> İkisi de alt satırda (<code>x = 1</code>). Biri en sol sütunda (<code>00</code>), biri en sağ sütunda (<code>10</code>). Sol ve sağ kenar birleşir! Sütunlarda <code>y</code> değişmiş (0 ve 1 olmuş, silindi), ama <code>z</code> ikisinde de <strong><code>0</code></strong> kalmış (yani <code>z'</code>)! Satırdan da <code>x</code> geldi ➔ Buradan <strong><code>xz'</code></strong> gelir!</li>
+        </ul>
+        <p>👉 <strong>Cevap: <code>F = yz + xz'</code></strong></p>
+      </div>
+
+      <div class="rule-box">
+        <h4>Örnek 2 (Slayt 27 - 4 Değişkenli): <code>F(w,x,y,z) = Σ(0, 1, 2, 4, 5, 6, 8, 9, 12, 13, 14)</code></h4>
+        <ul>
+          <li><strong>1. Grup (8'li Dev Grup - Octet):</strong> Sol taraftaki ilk iki sütun (<code>00</code> ve <code>01</code>) yukarıdan aşağıya komple <code>1</code> dolu! (Toplam 8 kutu: <code>m₀, m₁, m₄, m₅, m₁₂, m₁₃, m₈, m₉</code>). Tüm satırları kapladığı için <code>w</code> ve <code>x</code> silinir! İlk iki sütunda (<code>00</code> ve <code>01</code>) sabit kalan tek şey <code>y = 0</code>'dır ➔ Buradan tek başına <strong><code>y'</code></strong> gelir!</li>
+          <li><strong>2. Grup (4'lü Grup):</strong> Sağdaki <code>m₂</code> ve <code>m₆</code>'yı kurtarmak için soldaki <code>m₀</code> ve <code>m₁</code>?... Hayır, kenardan sararak <code>m₀, m₂, m₄, m₆</code> (üst iki satırın sol ve sağ uçları) 4'lü grup yapılır ➔ Buradan <strong><code>w'z'</code></strong> gelir!</li>
+          <li><strong>3. Grup (4'lü Grup):</strong> Kalan <code>m₁₄</code>'ü kurtarmak için <code>m₄, m₆, m₁₂, m₁₄</code> kenardan sarılır ➔ Buradan <strong><code>xz'</code></strong> gelir!</li>
+        </ul>
+        <p>👉 <strong>Cevap: <code>F = y' + w'z' + xz'</code></strong></p>
+      </div>
+
+      <div class="warn-box">
+        <h4>Örnek 3 (Slayt 28 - 4 Köşe Sorusu): <code>F = A'B'C' + B'CD' + A'BCD' + AB'C'</code></h4>
+        <p>Haritaya yerleştirdiğimizde <code>m₀, m₁, m₂, m₆, m₈, m₉, m₁₀</code> kutuları <code>1</code> olur.</p>
+        <ul>
+          <li><strong>1. Grup (4 Köşe - Four Corners!):</strong> Haritanın 4 köşesi (<code>m₀, m₂, m₈, m₁₀</code>) dolu! Bunları birleştirince satırlarda <code>B=0 (B')</code>, sütunlarda <code>D=0 (D')</code> sabit kalır ➔ <strong><code>B'D'</code></strong>!</li>
+          <li><strong>2. Grup (4'lü Grup - Üst ve Alt Sarma):</strong> En üst satırdaki <code>m₀, m₁</code> ile en alt satırdaki <code>m₈, m₉</code> birleşir ➔ <strong><code>B'C'</code></strong>!</li>
+          <li><strong>3. Grup (2'li Grup):</strong> Boşta kalan <code>m₆</code>, üstündeki <code>m₂</code> ile birleşir ➔ <strong><code>A'CD'</code></strong>!</li>
+        </ul>
+        <p>👉 <strong>Cevap: <code>F = B'D' + B'C' + A'CD'</code></strong></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function openPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
